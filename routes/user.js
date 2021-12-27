@@ -7,7 +7,7 @@ const checkEmailEnv = require("../middleware/checkEmailEnv");
 const userValidator = require("../middleware/schemaValidators/userValidator");
 const verificationCheck = require("../middleware/verificationCheck");
 
-router.post("/signup", userValidator.addUser, userController.addUser);
+// router.post("/signup", userValidator.addUser, userController.addUser);
 
 // router.post(
 //   "/login",
