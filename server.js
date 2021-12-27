@@ -27,59 +27,59 @@ mongoose.set("useFindAndModify", false);
 mongoose.set("useCreateIndex", true);
 mongoose.set("autoIndex", false);
 
-require("./models/Post");
-require("./models/User");
-require("./models/Comment");
-require("./models/CommentReply");
-require("./models/CommentReplyLike");
-require("./models/CommentLike");
-require("./models/PostLike");
-require("./models/Following");
-require("./models/Followers");
-require("./models/Notification");
-require("./models/ChatRoom");
-require("./models/Message");
+// require("./models/Post");
+// require("./models/User");
+// require("./models/Comment");
+// require("./models/CommentReply");
+// require("./models/CommentReplyLike");
+// require("./models/CommentLike");
+// require("./models/PostLike");
+// require("./models/Following");
+// require("./models/Followers");
+// require("./models/Notification");
+// require("./models/ChatRoom");
+// require("./models/Message");
 
-// const io = socket_io();
+const io = socket_io();
 
-// const userController = require("./controllers/userController");
+const userController = require("./controllers/userController");
 
-// app.io = io;
+app.io = io;
 
-// app.set("socketio", io);
+app.set("socketio", io);
 
-// io.use((socket, next) => {
-//   if (socket.handshake.query && socket.handshake.query.token) {
-//     const token = socket.handshake.query.token.split(" ")[1];
-//     jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
-//       if (err) return next(new Error("Authentication error"));
-//       socket.userData = decoded;
-//       next();
-//     });
-//   } else {
-//     next(new Error("Authentication error"));
-//   }
-// }).on("connection", (socket) => {
-//   // Connection now authenticated to receive further events
-//   socket.join(socket.userData.userId);
-//   io.in(socket.userData.userId).clients((err, clients) => {
-//     userController.changeStatus(socket.userData.userId, clients, io);
-//     //console.log(clients);
-//   });
-//   socket.on("typing", (data) => {
-//     socket.to(data.userId).emit("typing", { roomId: data.roomId });
-//   });
-//   socket.on("stoppedTyping", (data) => {
-//     socket.to(data.userId).emit("stoppedTyping", { roomId: data.roomId });
-//   });
-//   socket.on("disconnect", () => {
-//     socket.leave(socket.userData.userId);
-//     io.in(socket.userData.userId).clients((err, clients) => {
-//       userController.changeStatus(socket.userData.userId, clients, io);
-//       //console.log(clients);
-//     });
-//   });
-// });
+io.use((socket, next) => {
+  if (socket.handshake.query && socket.handshake.query.token) {
+    const token = socket.handshake.query.token.split(" ")[1];
+    jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
+      if (err) return next(new Error("Authentication error"));
+      socket.userData = decoded;
+      next();
+    });
+  } else {
+    next(new Error("Authentication error"));
+  }
+}).on("connection", (socket) => {
+  // Connection now authenticated to receive further events
+  socket.join(socket.userData.userId);
+  io.in(socket.userData.userId).clients((err, clients) => {
+    userController.changeStatus(socket.userData.userId, clients, io);
+    //console.log(clients);
+  });
+  socket.on("typing", (data) => {
+    socket.to(data.userId).emit("typing", { roomId: data.roomId });
+  });
+  socket.on("stoppedTyping", (data) => {
+    socket.to(data.userId).emit("stoppedTyping", { roomId: data.roomId });
+  });
+  socket.on("disconnect", () => {
+    socket.leave(socket.userData.userId);
+    io.in(socket.userData.userId).clients((err, clients) => {
+      userController.changeStatus(socket.userData.userId, clients, io);
+      //console.log(clients);
+    });
+  });
+});
 
 // const limiter = rateLimit({
 //   windowMs: 15 * 60 * 1000, // 15 minutes
