@@ -33,17 +33,17 @@ function checkFileType(file, cb) {
   }
 }
 
-const storage = multer.diskStorage({
-  //multers disk storage settings
-  destination: (req, file, cb) => {
-    cb(null, "./public/images/profile-picture/");
-  },
-  filename: (req, file, cb) => {
-    const ext = file.mimetype.split("/")[1];
+// const storage = multer.diskStorage({
+//   //multers disk storage settings
+//   destination: (req, file, cb) => {
+//     cb(null, "./public/images/profile-picture/");
+//   },
+//   filename: (req, file, cb) => {
+//     const ext = file.mimetype.split("/")[1];
 
-    cb(null, uuidv4() + "." + ext);
-  },
-});
+//     cb(null, uuidv4() + "." + ext);
+//   },
+// });
 
 const upload = multer({
   //multer settings
