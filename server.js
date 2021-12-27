@@ -8,7 +8,7 @@ const path = require("path");
 const logger = require("morgan");
 const mongoose = require("mongoose");
 const fs = require("fs");
-require("dotenv").config({ path: "variables.env" });
+require("dotenv").config({ path: ".env" });
 
 const app = express();
 
@@ -27,18 +27,18 @@ mongoose.set("useFindAndModify", false);
 mongoose.set("useCreateIndex", true);
 mongoose.set("autoIndex", false);
 
-// require("./models/Post");
-// require("./models/User");
-// require("./models/Comment");
-// require("./models/CommentReply");
-// require("./models/CommentReplyLike");
-// require("./models/CommentLike");
-// require("./models/PostLike");
-// require("./models/Following");
-// require("./models/Followers");
-// require("./models/Notification");
-// require("./models/ChatRoom");
-// require("./models/Message");
+require("./models/Post");
+require("./models/User");
+require("./models/Comment");
+require("./models/CommentReply");
+require("./models/CommentReplyLike");
+require("./models/CommentLike");
+require("./models/PostLike");
+require("./models/Following");
+require("./models/Followers");
+require("./models/Notification");
+require("./models/ChatRoom");
+require("./models/Message");
 
 // const io = socket_io();
 
