@@ -1,74 +1,97 @@
-const mongoose = require('mongoose');
-const crypto = require('crypto');
-const { v4: uuidv4 } = require('uuid');
-const {ObjectId} = mongoose.Schema;
+const mongoose = require("mongoose");
+mongoose.Promise = global.Promise;
 
-const userSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        trim: true,
-        required: true,
-        maxlength: 32
-    },
-    lastname: {
-        type: String,
-        trim: true,
-        required: true
-        
-    },
-    hashed_password: {
-        type: String,
-        required: true,
-    },
-    personalnumber: {
-        type: String,
-        trim: true,
-        unique:true,
-        require:true
-    },
-    number: { 
-        type: String,
-        trim: true, 
-    },
-    salt: String,
-    role:{
-        type: Number,
-        default:0
-    },
-    history: {
-        type: Array,
-        default: []
-    },
-    egadtypeid:{
-        type:ObjectId, ref:"egadtype"
-    }
-}, {timestamps: true})
+const postLikeSchema = new mongoose.Schema({
+  post: {
+    type: mongoose.Schema.ObjectId,
+    required: true,
+    ref: "Post",
+  },
+});
 
-// virtual field
-userSchema.virtual('password')
-.set(function(password){
-    this._password = password
-    this.salt = uuidv4();
-    this.hashed_password = this.encryptPassword(password)
-})
-.get(function(){
-    return this._password
-})
+const commentLikeSchema = new mongoose.Schema({
+  comment: {
+    type: mongoose.Schema.ObjectId,
+    required: true,
+    ref: "Comment",
+  },
+});
 
-userSchema.methods = {
-    authenticate: function(plainText){
-        return this.encryptPassword(plainText) === this.hashed_password;
-    },
+const commentReplyLikeSchema = new mongoose.Schema({
+  comment: {
+    type: mongoose.Schema.ObjectId,
+    required: true,
+    ref: "Reply",
+  },
+});
 
-    encryptPassword: function(password){
-        if(!password) return '';
-        try {
-            return crypto.createHmac('sha1', this.salt)
-                            .update(password)
-                            .digest('hex')
-        } catch (err) {
-            return "";
-        }
-    }
-};
-module.exports = mongoose.model("User", userSchema);
+const UserSchema = new mongoose.Schema({
+  firstName: {
+    type: String,
+    required: true,
+    minlength: 3,
+    maxlength: 30,
+    trim: true,
+    match: /^([A-Za-z0-9_](?:(?:[A-Za-z0-9_]|(?:\.(?!\.))){0,28}(?:[A-Za-z0-9_]))?)$/,
+  },
+  lastName: {
+    type: String,
+    required: true,
+    minlength: 3,
+    maxlength: 30,
+    trim: true,
+    match: /^([A-Za-z0-9_](?:(?:[A-Za-z0-9_]|(?:\.(?!\.))){0,28}(?:[A-Za-z0-9_]))?)$/,
+  },
+  username: {
+    type: String,
+    minlength: 3,
+    maxlength: 30,
+    trim: true,
+    match: /^([A-Za-z0-9_](?:(?:[A-Za-z0-9_]|(?:\.(?!\.))){0,28}(?:[A-Za-z0-9_]))?)$/,
+    required: true,
+    unique: true,
+  },
+  bio: {
+    type: String,
+    default: "",
+    trim: true,
+    maxlength: 250,
+  },
+  email: {
+    type: String,
+    trim: true,
+    required: true,
+    maxlength: 40,
+    unique: true,
+    match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
+  },
+  password: {
+    trim: true,
+    minlength: 3,
+    type: String,
+    required: true,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
+  profilePicture: {
+    type: String,
+    default: "person.png",
+  },
+  activityStatus: {
+    type: String,
+    default: "offline",
+  },
+  activated: {
+    type: Boolean,
+    default: process.env.ENABLE_SEND_EMAIL === "true" ? false : true,
+  },
+  postLikes: [postLikeSchema],
+  commentLikes: [commentLikeSchema],
+  commentReplyLikes: [commentReplyLikeSchema],
+});
+
+UserSchema.index({ username: "text", firstName: "text", lastName: "text" });
+
+module.exports = mongoose.model("User", UserSchema);
