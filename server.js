@@ -27,18 +27,18 @@ mongoose.set("useFindAndModify", false);
 mongoose.set("useCreateIndex", true);
 mongoose.set("autoIndex", false);
 
-// require("./models/Post");
-// require("./models/User");
-// require("./models/Comment");
-// require("./models/CommentReply");
-// require("./models/CommentReplyLike");
-// require("./models/CommentLike");
-// require("./models/PostLike");
-// require("./models/Following");
-// require("./models/Followers");
-// require("./models/Notification");
-// require("./models/ChatRoom");
-// require("./models/Message");
+require("./models/Post");
+require("./models/User");
+require("./models/Comment");
+require("./models/CommentReply");
+require("./models/CommentReplyLike");
+require("./models/CommentLike");
+require("./models/PostLike");
+require("./models/Following");
+require("./models/Followers");
+require("./models/Notification");
+require("./models/ChatRoom");
+require("./models/Message");
 
 // const io = socket_io();
 
@@ -86,11 +86,11 @@ mongoose.set("autoIndex", false);
 //   max: 200, // limit each IP to 200 requests per windowMs
 // });
 
-// const postsRouter = require("./routes/post");
-// const usersRouter = require("./routes/user");
-// const commentsRouter = require("./routes/comment");
-// const notificationRouter = require("./routes/notification");
-// const chatRouter = require("./routes/chat");
+const postsRouter = require("./routes/post");
+const usersRouter = require("./routes/user");
+const commentsRouter = require("./routes/comment");
+const notificationRouter = require("./routes/notification");
+const chatRouter = require("./routes/chat");
 
 // app.use(helmet());
 // if (process.env.NODE_ENV === "production") {
@@ -107,15 +107,15 @@ mongoose.set("autoIndex", false);
 // app.use(express.json());
 // app.use(express.urlencoded({ extended: false }));
 
-// app.use("/api/post/", postsRouter);
-// app.use("/api/user/", usersRouter);
-// app.use("/api/comment/", commentsRouter);
-// app.use("/api/notification/", notificationRouter);
-// app.use("/api/chat/", chatRouter);
+app.use("/api/post/", postsRouter);
+app.use("/api/user/", usersRouter);
+app.use("/api/comment/", commentsRouter);
+app.use("/api/notification/", notificationRouter);
+app.use("/api/chat/", chatRouter);
 
-// app.get("/auth/reset/password/:jwt", function (req, res) {
-//   return res.status(404).json({ message: "go to port 3000" });
-// });
+app.get("/auth/reset/password/:jwt", function (req, res) {
+  return res.status(404).json({ message: "go to port 3000" });
+});
 
 if(process.env.NODE_ENV === 'production'){
     //set static folder
