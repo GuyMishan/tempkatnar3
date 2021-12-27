@@ -7,7 +7,7 @@ import { notificationActions } from "./actions//notificationActions";
 import { PrivateRoute } from "./components/PrivateRoute";
 import "./styles/index.css";
 
-function App() {
+export function App() {
 
     return (
       <div>
@@ -15,5 +15,3 @@ function App() {
       </div>
     );
   }
-
-export default App;
