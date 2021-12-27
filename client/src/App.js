@@ -23,8 +23,6 @@ const LocationPage = lazy(() => import("./LocationPage/LocationPage"));
 const MessengerPage = lazy(() => import("./MessengerPage/MessengerPage"));
 const Navbar = lazy(() => import("./components/Navbar"));
 
-import React, { Fragment, Suspense, lazy } from "react";
-
 export function App() {
 
     return (
