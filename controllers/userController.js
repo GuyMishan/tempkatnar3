@@ -1,21 +1,21 @@
 // const mongoose = require("mongoose");
 // const path = require("path");
 // const fs = require("fs");
-// const Jimp = require("jimp");
-// const uuidv4 = require("uuid/v4");
-// const bcrypt = require("bcryptjs");
-// const jwt = require("jsonwebtoken");
-// const multer = require("multer");
-// const User = require("../models/User");
-// const Post = require("../models/Post");
-// const Following = require("../models/Following");
-// const Followers = require("../models/Followers");
-// const Notification = require("../models/Notification");
-// const ChatRoom = require("../models/ChatRoom");
-// const Message = require("../models/Message");
-// const notificationHandler = require("../handlers/notificationHandler");
-// const emailHandler = require("../handlers/emailHandler");
-// const messageHandler = require("../handlers/messageHandler");
+const Jimp = require("jimp");
+const uuidv4 = require("uuid/v4");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const multer = require("multer");
+const User = require("../models/User");
+const Post = require("../models/Post");
+const Following = require("../models/Following");
+const Followers = require("../models/Followers");
+const Notification = require("../models/Notification");
+const ChatRoom = require("../models/ChatRoom");
+const Message = require("../models/Message");
+const notificationHandler = require("../handlers/notificationHandler");
+const emailHandler = require("../handlers/emailHandler");
+const messageHandler = require("../handlers/messageHandler");
 
 // // Check File Type
 // function checkFileType(file, cb) {
