@@ -7,16 +7,7 @@ import { notificationActions } from "./actions//notificationActions";
 import { PrivateRoute } from "./components/PrivateRoute";
 import "./styles/index.css";
 
-class App extends React.Component {
-  componentDidMount() {
-
-  }
-
-  handleNotificationPopupClose = () => {
-   
-  };
-
-  render() {
+function App() {
 
     return (
       <div>
@@ -24,6 +15,5 @@ class App extends React.Component {
       </div>
     );
   }
-}
 
 export default App;
