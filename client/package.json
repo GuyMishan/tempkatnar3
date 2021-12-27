@@ -6,7 +6,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://git.heroku.com/tenegarage.git"
+    "url": "git+https://git.heroku.com/tempkatnar.git"
   },
   "keywords": [
     "react",
@@ -17,7 +17,7 @@
   "bugs": {
     "url": "https://github.com/mazivisits/issues"
   },
-  "homepage": "https://tenegarage.herokuapp.com/",
+  "homepage": "https://tempkatnar.herokuapp.com/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
