@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Notification = mongoose.model("Notification");
+const Notification = require("../models/Notification");
 
 exports.readNotifications = (req, res) => {
   Notification.updateMany(
