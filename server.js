@@ -30,18 +30,18 @@ mongoose.connect(process.env.ATLAS_URI, {
 // mongoose.set("useCreateIndex", true);
 // mongoose.set("autoIndex", false);
 
-// require("./models/Post");
-// require("./models/User");
-// require("./models/Comment");
-// require("./models/CommentReply");
-// require("./models/CommentReplyLike");
-// require("./models/CommentLike");
-// require("./models/PostLike");
-// require("./models/Following");
-// require("./models/Followers");
-// require("./models/Notification");
-// require("./models/ChatRoom");
-// require("./models/Message");
+require("./models/post");
+require("./models/user");
+require("./models/comment");
+require("./models/commentreply");
+require("./models/commentreplylike");
+require("./models/commentlike");
+require("./models/postlike");
+require("./models/following");
+require("./models/followers");
+require("./models/notification");
+require("./models/chatroom");
+require("./models/message");
 
 // const io = socket_io();
 
@@ -89,11 +89,11 @@ mongoose.connect(process.env.ATLAS_URI, {
 //   max: 200, // limit each IP to 200 requests per windowMs
 // });
 
-// const postsRouter = require("./routes/post");
+const postsRouter = require("./routes/post");
 const usersRouter = require("./routes/user");
-// const commentsRouter = require("./routes/comment");
-// const notificationRouter = require("./routes/notification");
-// const chatRouter = require("./routes/chat");
+const commentsRouter = require("./routes/comment");
+const notificationRouter = require("./routes/notification");
+const chatRouter = require("./routes/chat");
 
 // app.use(helmet());
 // if (process.env.NODE_ENV === "production") {
@@ -107,14 +107,14 @@ const usersRouter = require("./routes/user");
 //   app.use(logger("dev"));
 // }
 
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-// app.use("/api/post/", postsRouter);
+app.use("/api/post/", postsRouter);
 app.use("/api/user/", usersRouter);
-// app.use("/api/comment/", commentsRouter);
-// app.use("/api/notification/", notificationRouter);
-// app.use("/api/chat/", chatRouter);
+app.use("/api/comment/", commentsRouter);
+app.use("/api/notification/", notificationRouter);
+app.use("/api/chat/", chatRouter);
 
 // app.get("/auth/reset/password/:jwt", function (req, res) {
 //   return res.status(404).json({ message: "go to port 3000" });
