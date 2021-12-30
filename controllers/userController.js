@@ -6,7 +6,7 @@
 // const bcrypt = require("bcryptjs");
 // const jwt = require("jsonwebtoken");
 // const multer = require("multer");
-const User = require("../models/User");
+import User from "../models/User";
 // const Post = require("../models/Post");
 // const Following = require("../models/Following");
 // const Followers = require("../models/Followers");
