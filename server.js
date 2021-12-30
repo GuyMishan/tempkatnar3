@@ -30,18 +30,18 @@ mongoose.connect(process.env.ATLAS_URI, {
 // mongoose.set("useCreateIndex", true);
 // mongoose.set("autoIndex", false);
 
-require("./models/post");
-require("./models/user");
-require("./models/comment");
-require("./models/commentreply");
-require("./models/commentreplylike");
-require("./models/commentlike");
-require("./models/postlike");
-require("./models/following");
-require("./models/followers");
-require("./models/notification");
-require("./models/chatroom");
-require("./models/message");
+// require("./models/post");
+// require("./models/user");
+// require("./models/comment");
+// require("./models/commentreply");
+// require("./models/commentreplylike");
+// require("./models/commentlike");
+// require("./models/postlike");
+// require("./models/following");
+// require("./models/followers");
+// require("./models/notification");
+// require("./models/chatroom");
+// require("./models/message");
 
 // const io = socket_io();
 
