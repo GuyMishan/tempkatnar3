@@ -59,10 +59,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "offline",
   },
-  activated: {
-    type: Boolean,
-    default: process.env.ENABLE_SEND_EMAIL === "true" ? false : true,
-  },
+  // activated: {
+  //   type: Boolean,
+  //   default: process.env.ENABLE_SEND_EMAIL === "true" ? false : true,
+  // },
   postLikes: [ {type:ObjectId,ref:'Post'}],
   commentLikes: [ {type:ObjectId,ref:'CommentLike'}],
   commentReplyLikes: [ {type:ObjectId,ref:'CommentReplyLikes'}],
