@@ -17,12 +17,14 @@ mongoose.connect(process.env.ATLAS_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true 
-});
+})
+.then(() => console.log("Mongo connected"))
+.catch(err => console.log(err));;
 
 // mongoose.Promise = global.Promise; // Tell Mongoose to use ES6 promises
-mongoose.connection.on("error", (err) => {
-  console.error(err.message);
-});
+// mongoose.connection.on("error", (err) => {
+//   console.error(err.message);
+// });
 
 // mongoose.set("useFindAndModify", false);
 // mongoose.set("useCreateIndex", true);
