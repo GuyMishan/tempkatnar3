@@ -6,7 +6,7 @@ const CommentReply = require("../models/commentreply");
 const Notification = require("../models/notification");
 const CommentReplyLike = require("../models/commentreplylike");
 const User = mongoose.model("User");
-const notificationHandler = require("../handlers/notificationHandler");
+const notificationHandler = require("../handlers/notificationhandler");
 const linkify = require("linkifyjs");
 require("linkifyjs/plugins/hashtag")(linkify);
 require("linkifyjs/plugins/mention")(linkify);

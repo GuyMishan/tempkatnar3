@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const User = mongoose.model("User");
 const Followers = mongoose.model("Follower");
-const messageHandler = require("../handlers/messageHandler");
+const messageHandler = require("../handlers/messagehandler");
 
 module.exports = (req, res, next) => {
   Followers.find({ user: mongoose.Types.ObjectId(req.body.user._id) })

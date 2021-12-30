@@ -9,7 +9,7 @@ const Jimp = require("jimp");
 const path = require("path");
 const uuidv4 = require("uuid/v4");
 const multer = require("multer");
-const notificationHandler = require("../handlers/notificationHandler");
+const notificationHandler = require("../handlers/notificationhandler");
 const linkify = require("linkifyjs");
 require("linkifyjs/plugins/hashtag")(linkify);
 require("linkifyjs/plugins/mention")(linkify);

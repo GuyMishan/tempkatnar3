@@ -13,9 +13,9 @@ const Followers = require("../models/followers");
 const Notification = require("../models/notification");
 const ChatRoom = require("../models/chatroom");
 const Message = require("../models/message");
-const notificationHandler = require("../handlers/notificationHandler");
-const emailHandler = require("../handlers/emailHandler");
-const messageHandler = require("../handlers/messageHandler");
+const notificationHandler = require("../handlers/notificationhandler");
+const emailHandler = require("../handlers/emailhandler");
+const messageHandler = require("../handlers/messagehandler");
 
 // Check File Type
 function checkFileType(file, cb) {
