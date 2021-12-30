@@ -16,16 +16,17 @@ const app = express();
 mongoose.connect(process.env.ATLAS_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  useCreateIndex: true 
 });
 
-mongoose.Promise = global.Promise; // Tell Mongoose to use ES6 promises
+// mongoose.Promise = global.Promise; // Tell Mongoose to use ES6 promises
 mongoose.connection.on("error", (err) => {
   console.error(err.message);
 });
 
-mongoose.set("useFindAndModify", false);
-mongoose.set("useCreateIndex", true);
-mongoose.set("autoIndex", false);
+// mongoose.set("useFindAndModify", false);
+// mongoose.set("useCreateIndex", true);
+// mongoose.set("autoIndex", false);
 
 // require("./models/Post");
 // require("./models/User");
