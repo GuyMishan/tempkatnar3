@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const notificationController = require("../controllers/notificationcontroller");
 const checkAuth = require("../middleware/checkauth");
-const notificationValidator = require("../middleware/schemaValidators/notificationvalidator");
+const notificationValidator = require("../middleware/schemavalidators/notificationvalidator");
 
 router.post(
   "/readNotifications/",

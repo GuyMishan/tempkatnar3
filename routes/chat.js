@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const chatController = require("../controllers/chatcontroller");
 const checkAuth = require("../middleware/checkauth");
-const chatValidator = require("../middleware/schemaValidators/chatvalidator");
+const chatValidator = require("../middleware/schemavalidators/chatvalidator");
 const chechRoom = require("../middleware/chechroom");
 
 router.post("/getChatRooms/", checkAuth, chatController.getChatRooms);
