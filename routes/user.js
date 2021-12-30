@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const userController = require("../controllers/userController");
-const checkAuth = require("../middleware/checkAuth");
-const checkUser = require("../middleware/checkUser");
-const checkEmailEnv = require("../middleware/checkEmailEnv");
-const userValidator = require("../middleware/schemaValidators/userValidator");
-const verificationCheck = require("../middleware/verificationCheck");
+const userController = require("../controllers/usercontroller");
+const checkAuth = require("../middleware/checkauth");
+const checkUser = require("../middleware/checkuser");
+const checkEmailEnv = require("../middleware/checkemailenv");
+const userValidator = require("../middleware/schemaValidators/uservalidator");
+const verificationCheck = require("../middleware/verificationcheck");
 
 router.post("/signup", userValidator.addUser, userController.addUser);
 

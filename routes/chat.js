@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const chatController = require("../controllers/chatController");
-const checkAuth = require("../middleware/checkAuth");
-const chatValidator = require("../middleware/schemaValidators/chatValidator");
-const chechRoom = require("../middleware/chechRoom");
+const chatController = require("../controllers/chatcontroller");
+const checkAuth = require("../middleware/checkauth");
+const chatValidator = require("../middleware/schemaValidators/chatvalidator");
+const chechRoom = require("../middleware/chechroom");
 
 router.post("/getChatRooms/", checkAuth, chatController.getChatRooms);
 

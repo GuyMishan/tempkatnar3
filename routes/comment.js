@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const commentController = require("../controllers/commentController");
-const checkAuth = require("../middleware/checkAuth");
-const commentValidator = require("../middleware/schemaValidators/commentValidator");
+const commentController = require("../controllers/commentcontroller");
+const checkAuth = require("../middleware/checkauth");
+const commentValidator = require("../middleware/schemaValidators/commentvalidator");
 
 router.post(
   "/getComments/",
