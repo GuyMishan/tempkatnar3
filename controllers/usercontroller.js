@@ -111,9 +111,12 @@ exports.upload = async (req, res) => {
       });
     }
 
-    return res.send({
-      message: "File has been uploaded.",
-    });
+    else{
+      next();
+      return res.send({
+        message: "File has been uploaded.",
+      });
+    }
   } catch (error) {
     console.log(error);
 
