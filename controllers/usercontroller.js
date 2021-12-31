@@ -104,19 +104,16 @@ exports.upload = async (req, res) => {
   try {
     await uploadFilesMiddleware(req, res);
     console.log(req.file);
-
-    if (req.file == undefined) {
-      return res.send({
-        message: "You must select a file.",
-      });
-    }
-
-    else{
-      next();
-      return res.send({
-        message: "File has been uploaded.",
-      });
-    }
+    next();
+    // if (req.file == undefined) {
+    //   return res.send({
+    //     message: "You must select a file.",
+    //   });
+    // }
+      
+    //   return res.send({
+    //     message: "File has been uploaded.",
+    //   });
   } catch (error) {
     console.log(error);
 
