@@ -77,7 +77,7 @@ var storage = new GridFsStorage({
 //   },
 // }).single("photo");
 
-var uploadFiles = multer({ storage: storage, limits: { fileSize: 1024 * 1024, } }).single("file");
+var uploadFiles = multer({ storage: storage, limits: { fileSize: 1024 * 1024, } }).single("photo");
 
 // exports.upload = (req, res, next) => {
 //   upload(req, res, (err) => {
