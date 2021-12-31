@@ -111,10 +111,10 @@ exports.upload = async (req, res, next) => {
     }
 
     else {
+      next();
       return res.send({
         message: "File has been uploaded.",
       });
-      next();
     }
 
   } catch (error) {
