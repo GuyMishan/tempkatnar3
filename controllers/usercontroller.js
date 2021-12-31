@@ -100,7 +100,7 @@ var uploadFiles = multer({ storage: storage, limits: { fileSize: 1024 * 1024, } 
 
 var uploadFilesMiddleware = util.promisify(uploadFiles);
 
-exports.upload = async (req, res) => {
+exports.upload = async (req, res, next) => {
   try {
     await uploadFilesMiddleware(req, res);
     console.log(req.file);
