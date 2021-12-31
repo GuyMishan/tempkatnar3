@@ -77,7 +77,7 @@ var storage = new GridFsStorage({
 //   },
 // }).single("photo");
 
-var uploadFiles = multer({ storage: storage,limits: {fileSize: 1024 * 1024 ,}}).single("file");
+var uploadFiles = multer({ storage: storage, limits: { fileSize: 1024 * 1024, } }).single("file");
 
 // exports.upload = (req, res, next) => {
 //   upload(req, res, (err) => {
@@ -98,9 +98,29 @@ var uploadFiles = multer({ storage: storage,limits: {fileSize: 1024 * 1024 ,}}).
 //   });
 // };
 
-exports.upload = (req, res, next) => {
-  util.promisify(uploadFiles)
-  next();
+var uploadFilesMiddleware = util.promisify(uploadFiles);
+
+exports.upload = async (req, res) => {
+  try {
+    await uploadFilesMiddleware(req, res);
+    console.log(req.file);
+
+    if (req.file == undefined) {
+      return res.send({
+        message: "You must select a file.",
+      });
+    }
+
+    return res.send({
+      message: "File has been uploaded.",
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.send({
+      message: "Error when trying upload image: ${error}",
+    });
+  }
 };
 
 function deleteProfilePicture({ photo }) {
@@ -1053,7 +1073,7 @@ exports.changeStatus = (userId, clients, io) => {
       { activityStatus: "offline" },
       { new: true }
     )
-      .then(() => {})
+      .then(() => { })
       .catch((err) => console.log(err.message));
   } else {
     Followers.find({ user: mongoose.Types.ObjectId(userId) })
@@ -1087,7 +1107,7 @@ exports.changeStatus = (userId, clients, io) => {
       { activityStatus: "online" },
       { new: true }
     )
-      .then(() => {})
+      .then(() => { })
       .catch((err) => console.log(err.message));
   }
 };
