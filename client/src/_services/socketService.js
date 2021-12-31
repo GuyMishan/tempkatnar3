@@ -6,7 +6,7 @@ export const socketService = {
 //window.location.hostname
 function connect() {
   return new Promise((resolve, reject) => {
-    const socket = io("http://192.168.1.41:5000", {
+    const socket = io("https://tempkatnar.herokuapp.com", {
       query: { token: JSON.parse(localStorage.getItem("user")).token },
     });
     socket.on("connect", () => {
