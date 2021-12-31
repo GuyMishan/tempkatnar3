@@ -154,7 +154,7 @@ exports.changeProfilePicture = (req, res) => {
 
       User.findOneAndUpdate(
         { _id: req.userData.userId },
-        { profilePicture: req.body.photo },
+        { profilePicture: req.file.filename },
         { new: true }
       )
         .select("profilePicture")
