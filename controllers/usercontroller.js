@@ -17,6 +17,9 @@ const notificationHandler = require("../handlers/notificationhandler");
 const emailHandler = require("../handlers/emailhandler");
 const messageHandler = require("../handlers/messagehandler");
 
+const util = require("util");
+const { GridFsStorage } = require("multer-gridfs-storage"); //need to install
+
 // Check File Type
 function checkFileType(file, cb) {
   // Allowed ext
@@ -33,46 +36,71 @@ function checkFileType(file, cb) {
   }
 }
 
-const storage = multer.diskStorage({
-  //multers disk storage settings
-  destination: (req, file, cb) => {
-    cb(null, "./public/images/profile-picture/");
-  },
-  filename: (req, file, cb) => {
-    const ext = file.mimetype.split("/")[1];
+// const storage = multer.diskStorage({
+//   //multers disk storage settings
+//   destination: (req, file, cb) => {
+//     cb(null, "./public/images/profile-picture/");
+//   },
+//   filename: (req, file, cb) => {
+//     const ext = file.mimetype.split("/")[1];
 
-    cb(null, uuidv4() + "." + ext);
-  },
+//     cb(null, uuidv4() + "." + ext);
+//   },
+// });
+
+var storage = new GridFsStorage({
+  url: process.env.ATLAS_URI,
+  options: { useNewUrlParser: true, useUnifiedTopology: true },
+  file: (req, file) => {
+    const match = ["image/png", "image/jpeg"];
+
+    if (match.indexOf(file.mimetype) === -1) {
+      const filename = `${Date.now()}-bezkoder-${file.originalname}`;
+      return filename;
+    }
+
+    return {
+      bucketName: "photos",
+      filename: `${Date.now()}-bezkoder-${file.originalname}`
+    };
+  }
 });
 
-const upload = multer({
-  //multer settings
-  storage: storage,
-  fileFilter: function (req, file, cb) {
-    checkFileType(file, cb);
-  },
-  limits: {
-    fileSize: 1024 * 1024,
-  },
-}).single("photo");
+// const upload = multer({
+//   //multer settings
+//   storage: storage,
+//   fileFilter: function (req, file, cb) {
+//     checkFileType(file, cb);
+//   },
+//   limits: {
+//     fileSize: 1024 * 1024,
+//   },
+// }).single("photo");
+
+var uploadFiles = multer({ storage: storage,limits: {fileSize: 1024 * 1024 ,}}).single("file");
+
+// exports.upload = (req, res, next) => {
+//   upload(req, res, (err) => {
+//     if (err) return res.json({ message: err.message });
+
+//     if (!req.file) return res.json({ message: "Please upload a file" });
+
+//     req.body.photo = req.file.filename;
+
+//     Jimp.read(req.file.path, function (err, test) {
+//       if (err) throw err;
+//       test
+//         .resize(100, 100)
+//         .quality(50)
+//         .write("./public/images/profile-picture/100x100/" + req.body.photo);
+//       next();
+//     });
+//   });
+// };
 
 exports.upload = (req, res, next) => {
-  upload(req, res, (err) => {
-    if (err) return res.json({ message: err.message });
-
-    if (!req.file) return res.json({ message: "Please upload a file" });
-
-    req.body.photo = req.file.filename;
-
-    Jimp.read(req.file.path, function (err, test) {
-      if (err) throw err;
-      test
-        .resize(100, 100)
-        .quality(50)
-        .write("./public/images/profile-picture/100x100/" + req.body.photo);
-      next();
-    });
-  });
+  util.promisify(uploadFiles)
+  next();
 };
 
 function deleteProfilePicture({ photo }) {
