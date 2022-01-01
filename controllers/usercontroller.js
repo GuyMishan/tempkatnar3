@@ -25,12 +25,18 @@ const MongoClient = require("mongodb").MongoClient;
 const url = process.env.ATLAS_URI;
 const mongoClient = new MongoClient(url);
 
+// Mongo URI
+const mongoURI = url;
+
+// Create mongo connection
+const conn = mongoose.createConnection(mongoURI);
+
 // Init gfs
 let gfs;
 
 conn.once('open', () => {
   // Init stream
-  gfs = Grid(process.env.DATABASE, mongoose.mongo);
+  gfs = Grid(conn.db, mongoose.mongo);
   gfs.collection('photos');
 });
 
