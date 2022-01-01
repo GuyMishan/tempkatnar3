@@ -272,8 +272,7 @@ function downloadUserProfilePic(userId) {
     });
 }
 
-async function handleImageResponse(response) {
+ async function handleImageResponse(response) {
   const blob = await response.blob();
-  //download(blob,"guy.jpeg");
-  return blob;
+  return URL.createObjectURL(blob);
 }

@@ -26,7 +26,7 @@ hashtag(linkify);
 mention(linkify);
 
 const linkifyOptions = {
-  formatHref: function(href, type) {
+  formatHref: function (href, type) {
     if (type === "hashtag") {
       href = "/hashtags/" + href.substring(1);
     }
@@ -46,15 +46,25 @@ class ProfilePage extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {imgdata: null};
+    this.state = {
+      url: '',
+      bool: false
+    };
   }
 
   componentDidMount = () => {
     document.title = "Profile | social-network";
-    // this.downloadProfilePic();
-    // const { dispatch, user } = this.props;
-    // dispatch(userActions.downloadProfilePic(user.data._id));
   };
+
+  componentDidUpdate() {
+    if (this.state.bool === false) {
+      const { user } = this.props;
+      this.downloadUserProfilePic(user.data._id)
+        .then((res) => {
+          this.setState({ url: res, bool: true })
+        });
+    }
+  }
 
   fetchData = () => {
     const { dispatch, user } = this.props;
@@ -72,14 +82,25 @@ class ProfilePage extends Component {
     dispatch(userActions.getFollowers(user.data._id));
   };
 
-  downloadProfilePic = () => {
-    const { dispatch, user } = this.props; 
-    dispatch(userActions.downloadProfilePic(user.data._id));
-  };
+  downloadUserProfilePic(userId) {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        Authorization: JSON.parse(localStorage.getItem("user")).token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId }),
+    };
+    return fetch("/api/user/downloadUserProfilePic", requestOptions)
+      .then(async (response) => {
+        const blob = await response.blob();
+        return URL.createObjectURL(blob);
+      })
+  }
 
   render() {
-    this.downloadProfilePic();
     const { user, alert } = this.props;
+
     const hasMore =
       user.data.postsCount === user.data.posts.length ? false : true;
     const posts = user.data.posts.map(post => {
@@ -128,20 +149,20 @@ class ProfilePage extends Component {
 
     const followingList = user.data.follwingUsers.length
       ? user.data.follwingUsers.map(({ user }) => (
-          <FollowingFollowerList
-            key={user._id}
-            user={user}
-          ></FollowingFollowerList>
-        ))
+        <FollowingFollowerList
+          key={user._id}
+          user={user}
+        ></FollowingFollowerList>
+      ))
       : "No followings";
 
     const followerList = user.data.followerUsers.length
       ? user.data.followerUsers.map(({ user }) => (
-          <FollowingFollowerList
-            key={user._id}
-            user={user}
-          ></FollowingFollowerList>
-        ))
+        <FollowingFollowerList
+          key={user._id}
+          user={user}
+        ></FollowingFollowerList>
+      ))
       : "No followers";
 
     return (
@@ -160,18 +181,11 @@ class ProfilePage extends Component {
 
             <header>
               <div className="container">
-                {/* {imgdata}
-                <img src={`image/${imgdata}`} alt=""/> */}
                 {alert.type ? <Messages alert={alert} /> : null}
                 <div className="profile">
                   <div className="profile-image">
-                    {/* <img
-                      src={`/images/profile-picture/100x100/${user.data.profilePicture}`}
-                      alt=""
-                    /> */}
-                    {/* <img src={`data:image/jpeg;base64,${imgdata}`} /> */}
+                  <img src={this.state.url} alt="homo" />
                   </div>
-
                   <div className="profile-user-settings">
                     <h1 className="profile-user-name">{user.data.username}</h1>
 
