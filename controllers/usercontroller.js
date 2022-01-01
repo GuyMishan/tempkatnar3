@@ -19,11 +19,20 @@ const messageHandler = require("../handlers/messagehandler");
 
 const util = require("util");
 const { GridFsStorage } = require("multer-gridfs-storage");
-
+const Grid = require('gridfs-stream');
 const GridFSBucket = require("mongodb").GridFSBucket;
 const MongoClient = require("mongodb").MongoClient;
 const url = process.env.ATLAS_URI;
 const mongoClient = new MongoClient(url);
+
+// Init gfs
+let gfs;
+
+conn.once('open', () => {
+  // Init stream
+  gfs = Grid(process.env.DATABASE, mongoose.mongo);
+  gfs.collection('photos');
+});
 
 // Check File Type
 function checkFileType(file, cb) {
@@ -1125,36 +1134,36 @@ exports.downloadUserProfilePic = async (req, res) => {
     .then(async (user) => { //data=user.profilepic
       let profilepicname=user.profilePicture;
       try {
-        await mongoClient.connect();
+        // await mongoClient.connect();
 
-        const database = mongoClient.db(process.env.DATABASE);
-        const bucket = await new GridFSBucket(database, {
-          bucketName: "photos",
-        });
-
-        // bucket.files.findOne({ filename: profilepicname }, (err, file) => {
-        //   // Check if file
-        //   if (!file || file.length === 0) {
-        //     return res.status(404).json({
-        //       err: 'No file exists'
-        //     });
-        //   }
-      
-        //   // Check if image
-        //   if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
-        //     // Read output to browser
-        //     const readstream = bucket.createReadStream(file.filename);
-        //     readstream.pipe(res);
-        //   } else {
-        //     res.status(404).json({
-        //       err: 'Not an image'
-        //     });
-        //   }
+        // const database = mongoClient.db(process.env.DATABASE);
+        // const bucket = await new GridFSBucket(database, {
+        //   bucketName: "photos",
         // });
 
-        const readstream = bucket.createReadStream(profilepicname);
-        readstream.pipe(res);
-        return res.status(200);
+        gfs.files.findOne({ filename: profilepicname }, (err, file) => {
+          // Check if file
+          if (!file || file.length === 0) {
+            return res.status(404).json({
+              err: 'No file exists'
+            });
+          }
+      
+          // Check if image
+          if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
+            // Read output to browser
+            const readstream = gfs.createReadStream(file.filename);
+            readstream.pipe(res);
+          } else {
+            res.status(404).json({
+              err: 'Not an image'
+            });
+          }
+        });
+
+        // const readstream = bucket.createReadStream(profilepicname);
+        // readstream.pipe(res);
+        // return res.status(200);
 
        // let downloadStream = bucket.openDownloadStreamByName(profilepicname);
 
