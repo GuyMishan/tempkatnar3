@@ -68,12 +68,12 @@ class ProfilePage extends Component {
   };
 
   downloadProfilePic = () => {
-    const { dispatch, user } = this.props;
-    dispatch(userActions.downloadProfilePic(user.data._id));
+    const { dispatch, user } = this.props; 
+    return dispatch(userActions.downloadProfilePic(user.data._id));
   };
 
   render() {
-    this.downloadProfilePic();
+    const imgdata=this.downloadProfilePic();
     const { user, alert } = this.props;
     const hasMore =
       user.data.postsCount === user.data.posts.length ? false : true;
@@ -158,10 +158,11 @@ class ProfilePage extends Component {
                 {alert.type ? <Messages alert={alert} /> : null}
                 <div className="profile">
                   <div className="profile-image">
-                    <img
+                    {/* <img
                       src={`/images/profile-picture/100x100/${user.data.profilePicture}`}
                       alt=""
-                    />
+                    /> */}
+                    <img src={`data:image/jpeg;base64,${imgdata}`} />
                   </div>
 
                   <div className="profile-user-settings">
