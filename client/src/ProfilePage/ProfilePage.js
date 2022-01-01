@@ -44,6 +44,11 @@ const linkifyOptions = {
 
 class ProfilePage extends Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {imgdata: null};
+  }
+
   componentDidMount = () => {
     document.title = "Profile | social-network";
     // this.downloadProfilePic();
@@ -69,11 +74,15 @@ class ProfilePage extends Component {
 
   downloadProfilePic = () => {
     const { dispatch, user } = this.props; 
-    return dispatch(userActions.downloadProfilePic(user.data._id));
+    let x=dispatch(userActions.downloadProfilePic(user.data._id));
+    console.log(x);
+    this.setState({
+      imgdata: x
+    });
   };
 
   render() {
-    const imgdata=this.downloadProfilePic();
+    this.downloadProfilePic();
     const { user, alert } = this.props;
     const hasMore =
       user.data.postsCount === user.data.posts.length ? false : true;
@@ -84,11 +93,11 @@ class ProfilePage extends Component {
           size="small"
           trigger={
             <div className="gallery-item">
-              <img
+              {/* <img
                 src={`/images/post-images/thumbnail/${post.photo}`}
                 className="gallery-image"
                 alt=""
-              />
+              /> */}
 
               <div className="gallery-item-info">
                 <ul>
@@ -155,8 +164,8 @@ class ProfilePage extends Component {
 
             <header>
               <div className="container">
-                {imgdata}
-                <img src={`image/${imgdata}`} alt=""/>
+                {/* {imgdata}
+                <img src={`image/${imgdata}`} alt=""/> */}
                 {alert.type ? <Messages alert={alert} /> : null}
                 <div className="profile">
                   <div className="profile-image">
