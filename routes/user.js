@@ -116,7 +116,7 @@ router.post(
 
 router.post(
   "/downloadUserProfilePic",
-  checkAuth,
+  // checkAuth,
   userController.downloadUserProfilePic
 );
 
