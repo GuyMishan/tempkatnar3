@@ -19,7 +19,7 @@ const messageHandler = require("../handlers/messagehandler");
 
 const util = require("util");
 const { GridFsStorage } = require("multer-gridfs-storage");
-const url = dbConfig.ATLAS_URI;
+const url = process.env.ATLAS_URI;
 const mongoClient = new MongoClient(url);
 
 // Check File Type
