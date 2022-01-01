@@ -1128,7 +1128,7 @@ exports.downloadUserProfilePic = async (req, res) => {
         await mongoClient.connect();
 
         const database = mongoClient.db(process.env.DATABASE);
-        const bucket = new GridFSBucket(database, {
+        const bucket = await new GridFSBucket(database, {
           bucketName: "photos",
         });
 
