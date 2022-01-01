@@ -45,6 +45,7 @@ const linkifyOptions = {
 class ProfilePage extends Component {
   componentDidMount = () => {
     document.title = "Profile | social-network";
+    downloadProfilePic();
   };
 
   fetchData = () => {
