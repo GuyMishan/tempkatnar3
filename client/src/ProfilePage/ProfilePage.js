@@ -155,6 +155,7 @@ class ProfilePage extends Component {
 
             <header>
               <div className="container">
+                {imgdata}
                 {alert.type ? <Messages alert={alert} /> : null}
                 <div className="profile">
                   <div className="profile-image">
