@@ -117,7 +117,6 @@ router.post(
 router.post(
   "/downloadUserProfilePic",
   checkAuth,
-  // userValidator.getPosts,
   userController.downloadUserProfilePic
 );
 
