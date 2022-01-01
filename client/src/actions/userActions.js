@@ -22,6 +22,7 @@ export const userActions = {
   getUserProfileData,
   getNewUsers,
   resetPassword,
+  downloadProfilePic,
 };
 
 function logout() {
@@ -372,5 +373,22 @@ function getFollowers(userId) {
 
   function success(users) {
     return { type: userConstants.GET_USER_FOLLOWERS, users };
+  }
+}
+
+function downloadProfilePic(userId) {
+  return (dispatch) => {
+    userService.downloadUserProfilePic(userId).then(
+      (response) => {
+        dispatch(success(response));
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
+
+  function success(users) {
+    return { type: userConstants.DOWNLOAD_USER_PROFILEPIC, users };
   }
 }

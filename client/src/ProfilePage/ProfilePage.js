@@ -63,6 +63,11 @@ class ProfilePage extends Component {
     dispatch(userActions.getFollowers(user.data._id));
   };
 
+  downloadProfilePic = () => {
+    const { dispatch, user } = this.props;
+    dispatch(userActions.downloadProfilePic(user.data._id));
+  };
+
   render() {
     const { user, alert } = this.props;
     const hasMore =

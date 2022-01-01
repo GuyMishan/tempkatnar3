@@ -114,6 +114,13 @@ router.post(
   userController.followUser
 );
 
+router.post(
+  "/downloadUserProfilePic",
+  checkAuth,
+  // userValidator.getPosts,
+  userController.downloadUserProfilePic
+);
+
 router.post("/delete/", checkAuth, userController.deleteUser);
 
 module.exports = router;

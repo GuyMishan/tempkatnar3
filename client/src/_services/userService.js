@@ -13,6 +13,7 @@ export const userService = {
   getUserProfileFollowers,
   getUserProfileFollowings,
   getNewUsers,
+  downloadUserProfilePic,
 };
 
 function login(email, password) {
@@ -253,4 +254,20 @@ function handlePasswordResetResponse(response) {
 
     return data;
   });
+}
+
+function downloadUserProfilePic(userId) {
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      Authorization: JSON.parse(localStorage.getItem("user")).token,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ userId }),
+  };
+  return fetch("/api/user/downloadUserProfilePic", requestOptions)
+    .then(handleResponse)
+    .then((res) => {
+      return res;
+    });
 }
