@@ -19,6 +19,8 @@ const messageHandler = require("../handlers/messagehandler");
 
 const util = require("util");
 const { GridFsStorage } = require("multer-gridfs-storage");
+
+const GridFSBucket = require("mongodb").GridFSBucket;
 const MongoClient = require("mongodb").MongoClient;
 const url = process.env.ATLAS_URI;
 const mongoClient = new MongoClient(url);
