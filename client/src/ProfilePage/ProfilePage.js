@@ -21,6 +21,7 @@ import hashtag from "linkifyjs/plugins/hashtag";
 import mention from "linkifyjs/plugins/mention";
 import FollowingFollowerList from "../components/FollowingFollowerList";
 import Post from "../components/Post/Post";
+import ProfilePic from "./ProfilePic";
 
 hashtag(linkify);
 mention(linkify);
@@ -51,8 +52,8 @@ class ProfilePage extends Component {
   componentDidMount = () => {
     document.title = "Profile | social-network";
     // this.downloadProfilePic();
-    const { dispatch, user } = this.props;
-    dispatch(userActions.downloadProfilePic(user.data._id));
+    // const { dispatch, user } = this.props;
+    // dispatch(userActions.downloadProfilePic(user.data._id));
   };
 
   fetchData = () => {
@@ -72,7 +73,7 @@ class ProfilePage extends Component {
   };
 
   render() {
-    const { user, alert } = this.props;
+    const { user, alert,dispatch } = this.props;
     const hasMore =
       user.data.postsCount === user.data.posts.length ? false : true;
     const posts = user.data.posts.map(post => {
@@ -155,12 +156,13 @@ class ProfilePage extends Component {
               <div className="container">
                 {alert.type ? <Messages alert={alert} /> : null}
                 <div className="profile">
-                  <div className="profile-image">
+                  {/* <div className="profile-image">
                     <img
                       src={`/images/profile-picture/100x100/${user.data.profilePicture}`}
                       alt=""
                     />
-                  </div>
+                  </div> */}
+                  <ProfilePic user={user} dispatch={dispatch}/>
 
                   <div className="profile-user-settings">
                     <h1 className="profile-user-name">{user.data.username}</h1>
