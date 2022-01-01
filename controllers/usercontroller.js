@@ -1136,8 +1136,8 @@ exports.changeStatus = (userId, clients, io) => {
 };
 
 exports.downloadUserProfilePic = async (req, res) => {
-  // User.findById(req.userData.userId)
-  User.findById(req.body.userData.userId)
+   User.findById(req.userData.userId)
+  //User.findById(req.body.userData.userId)
     .then(async (user) => { //data=user.profilepic
       let profilepicname=user.profilePicture;
       try {
