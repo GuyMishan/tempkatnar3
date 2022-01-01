@@ -266,8 +266,14 @@ function downloadUserProfilePic(userId) {
     body: JSON.stringify({ userId }),
   };
   return fetch("/api/user/downloadUserProfilePic", requestOptions)
-    .then(handleResponse)
+    .then(handleImageResponse)
     .then((res) => {
       return res;
     });
+}
+
+async function handleImageResponse(response) {
+  const blob = await response.blob();
+  //download(blob,"guy.jpeg");
+  return blob;
 }
