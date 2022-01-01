@@ -1152,7 +1152,7 @@ exports.downloadUserProfilePic = async (req, res) => {
         //   }
         // });
 
-        const readstream = bucket.createReadStream(file.filename);
+        const readstream = bucket.createReadStream(profilepicname);
         readstream.pipe(res);
         return res.status(200);
 
