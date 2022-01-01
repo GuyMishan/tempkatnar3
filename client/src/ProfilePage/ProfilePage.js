@@ -43,6 +43,11 @@ const linkifyOptions = {
 };
 
 class ProfilePage extends Component {
+  downloadProfilePic = () => {
+    const { dispatch, user } = this.props;
+    dispatch(userActions.downloadProfilePic(user.data._id));
+  };
+  
   componentDidMount = () => {
     document.title = "Profile | social-network";
     downloadProfilePic();
@@ -62,11 +67,6 @@ class ProfilePage extends Component {
   getFollowers = () => {
     const { dispatch, user } = this.props;
     dispatch(userActions.getFollowers(user.data._id));
-  };
-
-  downloadProfilePic = () => {
-    const { dispatch, user } = this.props;
-    dispatch(userActions.downloadProfilePic(user.data._id));
   };
 
   render() {
