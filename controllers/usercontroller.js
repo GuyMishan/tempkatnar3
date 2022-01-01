@@ -1139,7 +1139,7 @@ exports.downloadUserProfilePic = async (req, res) => {
         });
 
         downloadStream.on("error", function (err) {
-          return res.status(404).send({ message: "Cannot download the Image!" });
+          return res.status(404).send({ message: "Cannot download the Image:"+data });
         });
 
         downloadStream.on("end", () => {
