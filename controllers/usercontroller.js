@@ -1120,7 +1120,7 @@ exports.changeStatus = (userId, clients, io) => {
 exports.download = async (req, res) => {
   User.findById(req.userData.userId)
     .select("profilePicture")
-    .then((data) => { //data=user.profilepic
+    .then(async (data) => { //data=user.profilepic
       try {
         await mongoClient.connect();
 
