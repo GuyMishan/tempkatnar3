@@ -1132,19 +1132,39 @@ exports.downloadUserProfilePic = async (req, res) => {
           bucketName: "photos",
         });
 
-        let downloadStream = bucket.openDownloadStreamByName(profilepicname);
-
-        downloadStream.on("data", function (profilepicname) {
-          return res.status(200).write(profilepicname);
+        bucket.files.findOne({ filename: profilepicname }, (err, file) => {
+          // Check if file
+          if (!file || file.length === 0) {
+            return res.status(404).json({
+              err: 'No file exists'
+            });
+          }
+      
+          // Check if image
+          if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
+            // Read output to browser
+            const readstream = bucket.createReadStream(file.filename);
+            readstream.pipe(res);
+          } else {
+            res.status(404).json({
+              err: 'Not an image'
+            });
+          }
         });
 
-        downloadStream.on("error", function (err) {
-          return res.status(404).send({ message: "Cannot download the Image:"+profilepicname });
-        });
+       // let downloadStream = bucket.openDownloadStreamByName(profilepicname);
 
-        downloadStream.on("end", () => {
-          return res.end();
-        });
+        // downloadStream.on("data", function (profilepicname) {
+        //   return res.status(200).write(profilepicname);
+        // });
+
+        // downloadStream.on("error", function (err) {
+        //   return res.status(404).send({ message: "Cannot download the Image:"+profilepicname });
+        // });
+
+        // downloadStream.on("end", () => {
+        //   return res.end();
+        // });
       } catch (error) {
         return res.status(500).send({
           message: error.message,
