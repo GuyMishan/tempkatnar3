@@ -74,11 +74,7 @@ class ProfilePage extends Component {
 
   downloadProfilePic = () => {
     const { dispatch, user } = this.props; 
-    let x=dispatch(userActions.downloadProfilePic(user.data._id));
-    console.log(x);
-    this.setState({
-      imgdata: x
-    });
+    dispatch(userActions.downloadProfilePic(user.data._id));
   };
 
   render() {
