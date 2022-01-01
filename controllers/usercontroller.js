@@ -1118,39 +1118,35 @@ exports.changeStatus = (userId, clients, io) => {
   }
 };
 
-exports.download = (req, res) => {
+exports.downloadUserProfilePic = async (req, res) => {
   User.findById(req.userData.userId)
     .select("profilePicture")
-    // .then(async (data) => { //data=user.profilepic
-      .then((data) => {
-        return res.status(200).json({ data });
-      })
-      .catch((err) => res.status(500).json({ message: err.message }));
-    //   try {
-    //     // await mongoClient.connect();
+    .then(async (data) => { //data=user.profilepic
+      try {
+        await mongoClient.connect();
 
-    //     // const database = mongoClient.db(process.env.DATABASE);
-    //     // const bucket = new GridFSBucket(database, {
-    //     //   bucketName: "photos",
-    //     // });
+        const database = mongoClient.db(process.env.DATABASE);
+        const bucket = new GridFSBucket(database, {
+          bucketName: "photos",
+        });
 
-    //     // let downloadStream = bucket.openDownloadStreamByName(data);
+        let downloadStream = bucket.openDownloadStreamByName(data);
 
-    //     // downloadStream.on("data", function (data) {
-    //     //   return res.status(200).write(data);
-    //     // });
+        downloadStream.on("data", function (data) {
+          return res.status(200).write(data);
+        });
 
-    //     // downloadStream.on("error", function (err) {
-    //     //   return res.status(404).send({ message: "Cannot download the Image!" });
-    //     // });
+        downloadStream.on("error", function (err) {
+          return res.status(404).send({ message: "Cannot download the Image!" });
+        });
 
-    //     // downloadStream.on("end", () => {
-    //     //   return res.end();
-    //     return res.status(200).json({ data });
-    //   } catch (error) {
-    //     return res.status(500).send({
-    //       message: error.message,
-    //     });
-    //   }
-    // })
+        downloadStream.on("end", () => {
+          return res.end();
+        });
+      } catch (error) {
+        return res.status(500).send({
+          message: error.message,
+        });
+      }
+    })
 };
