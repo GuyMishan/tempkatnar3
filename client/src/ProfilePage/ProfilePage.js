@@ -50,7 +50,7 @@ class ProfilePage extends Component {
   
   componentDidMount = () => {
     document.title = "Profile | social-network";
-    downloadProfilePic();
+    this.downloadProfilePic();
   };
 
   fetchData = () => {
