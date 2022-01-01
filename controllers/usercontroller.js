@@ -1136,17 +1136,10 @@ exports.changeStatus = (userId, clients, io) => {
 };
 
 exports.downloadUserProfilePic = async (req, res) => {
-  User.findById(req.userData.userId)
+  User.findById(req.body.userId)
     .then(async (user) => { //data=user.profilepic
       let profilepicname=user.profilePicture;
       try {
-        // await mongoClient.connect();
-
-        // const database = mongoClient.db(process.env.DATABASE);
-        // const bucket = await new GridFSBucket(database, {
-        //   bucketName: "photos",
-        // });
-
         gfs.files.findOne({ filename: profilepicname }, (err, file) => {
           // Check if file
           if (!file || file.length === 0) {
@@ -1154,7 +1147,7 @@ exports.downloadUserProfilePic = async (req, res) => {
               err: 'No file exists'
             });
           }
-      
+
           // Check if image
           if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
             // Read output to browser
@@ -1166,28 +1159,11 @@ exports.downloadUserProfilePic = async (req, res) => {
             });
           }
         });
-
-        // const readstream = bucket.createReadStream(profilepicname);
-        // readstream.pipe(res);
-        // return res.status(200);
-
-       // let downloadStream = bucket.openDownloadStreamByName(profilepicname);
-
-        // downloadStream.on("data", function (profilepicname) {
-        //   return res.status(200).write(profilepicname);
-        // });
-
-        // downloadStream.on("error", function (err) {
-        //   return res.status(404).send({ message: "Cannot download the Image:"+profilepicname });
-        // });
-
-        // downloadStream.on("end", () => {
-        //   return res.end();
-        // });
       } catch (error) {
         return res.status(500).send({
           message: error.message,
         });
       }
     })
+  //res.status(200).json(req.body.userId);
 };
