@@ -1122,8 +1122,8 @@ exports.changeStatus = (userId, clients, io) => {
 
 exports.downloadUserProfilePic = async (req, res) => {
   User.findById(req.userData.userId)
-    .select("profilePicture")
-    .then(async (data) => { //data=user.profilepic
+    .then(async (user) => { //data=user.profilepic
+      let profilepicname=user.profilePicture;
       try {
         await mongoClient.connect();
 
@@ -1132,14 +1132,14 @@ exports.downloadUserProfilePic = async (req, res) => {
           bucketName: "photos",
         });
 
-        let downloadStream = bucket.openDownloadStreamByName(data);
+        let downloadStream = bucket.openDownloadStreamByName(profilepicname);
 
-        downloadStream.on("data", function (data) {
-          return res.status(200).write(data);
+        downloadStream.on("data", function (profilepicname) {
+          return res.status(200).write(profilepicname);
         });
 
         downloadStream.on("error", function (err) {
-          return res.status(404).send({ message: "Cannot download the Image:"+data });
+          return res.status(404).send({ message: "Cannot download the Image:"+profilepicname });
         });
 
         downloadStream.on("end", () => {
