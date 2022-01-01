@@ -35,10 +35,10 @@ export default function ProfilePic(props) {
 
     return (
         <div className="profile-image">
-            <img
+            {/* <img
                 src={`/images/profile-picture/100x100/${user.data.profilePicture}`}
                 alt=""
-            />
+            /> */}
         </div>
     )
 }
