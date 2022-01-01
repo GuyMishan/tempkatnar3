@@ -173,7 +173,7 @@ class ProfilePage extends Component {
                       src={`/images/profile-picture/100x100/${user.data.profilePicture}`}
                       alt=""
                     /> */}
-                    <img src={`data:image/jpeg;base64,${imgdata}`} />
+                    {/* <img src={`data:image/jpeg;base64,${imgdata}`} /> */}
                   </div>
 
                   <div className="profile-user-settings">
