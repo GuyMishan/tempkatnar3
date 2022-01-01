@@ -50,13 +50,15 @@ class ProfilePage extends Component {
   
   componentDidMount = () => {
     document.title = "Profile | social-network";
+    // this.downloadProfilePic();
+    const { dispatch, user } = this.props;
+    dispatch(userActions.downloadProfilePic(user.data._id));
   };
 
   fetchData = () => {
     const { dispatch, user } = this.props;
     const lastId = user.data.posts[user.data.posts.length - 1]._id;
     dispatch(userActions.getPosts({ userId: user.data._id, lastId }));
-    this.downloadProfilePic();
   };
 
   getFollowings = () => {
