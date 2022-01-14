@@ -10,16 +10,23 @@ import { NotificationPopup } from "./NotificationPopup";
 import { AutosuggestExample } from "../components/Autosuggestion";
 import { AnsweringModal } from "../MessengerPage/AnsweringModal";
 
-function trigger(image, name) {
+function trigger(imgurl) {
   return (
-    <span>
-      <Image
-        size="mini"
-        avatar
-        src={"/images/profile-picture/100x100/" + image}
-      />{" "}
-      {name}
-    </span>
+    imgurl !== "" ?
+      <span>
+        <Image
+          size="mini"
+          avatar
+          src={imgurl}
+        />
+      </span> :
+      <span>
+        <Image
+          size="mini"
+          avatar
+          src={"/images/profile-picture/100x100/person.png"}
+        />
+      </span>
   );
 }
 
@@ -60,12 +67,30 @@ class Navbar extends Component {
         },
       ],
       activePath: "",
+      url: "",
+      bool: false
     };
     this.params = {
       homePage: false,
       profilePage: false,
       userProfile: false,
     };
+  }
+
+  downloadUserProfilePic(userId) {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        Authorization: JSON.parse(localStorage.getItem("user")).token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId }),
+    };
+    return fetch("/api/user/downloadUserProfilePic", requestOptions)
+      .then(async (response) => {
+        const blob = await response.blob();
+        return URL.createObjectURL(blob);
+      })
   }
 
   componentDidMount() {
@@ -85,6 +110,21 @@ class Navbar extends Component {
 
     this.setState({ activePath: history.location.pathname });
     dispatch(socketActions.connect());
+  }
+
+  componentDidUpdate() {
+    if (this.state.bool === false) {
+      const { user } = this.props;
+      if (user.data._id) {
+        if(user.data.profilePicture!=="person.png")
+        {
+        this.downloadUserProfilePic(user.data._id)
+          .then((res) => {
+            this.setState({ url: res, bool: true })
+          });
+        }
+      }
+    }
   }
 
   handleNotificationPopupToggle = (e) => {
@@ -182,7 +222,7 @@ class Navbar extends Component {
                     id="avatar-container"
                   >
                     <Dropdown
-                      trigger={trigger(user.data.profilePicture)}
+                      trigger={trigger(this.state.url)}
                       selectOnNavigation={false}
                       options={options}
                       icon={null}

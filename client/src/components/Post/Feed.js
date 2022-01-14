@@ -6,10 +6,33 @@ import { postActions } from "../../actions/postActions";
 import { Dimmer, Loader, Divider, Header, Icon } from "semantic-ui-react";
 
 class Feed extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      newposts: [],
+      bool: false
+    };
+  }
+
   componentDidMount() {
     const { dispatch, posts } = this.props;
     if (!posts.length) {
       dispatch(postActions.fetchPosts({ initialFetch: true }));
+    }
+  }
+
+  async componentDidUpdate() {
+    if (this.state.bool === false) {
+      let newposts = [];
+      const { posts } = this.props;
+      if (posts.length>0) {
+        newposts = posts;
+        for (let i = 0; i < posts.length; i++) {
+          newposts[i].photourl = await this.downloadPostPicture(posts[i]);
+        }
+        this.setState({ ...this.state, bool: true, newposts: newposts })
+      }
     }
   }
 
@@ -23,10 +46,26 @@ class Feed extends Component {
     );
   };
 
+  async downloadPostPicture(posts) {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        Authorization: JSON.parse(localStorage.getItem("user")).token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ posts }),
+    };
+    return fetch("/api/post/downloadPostPicture", requestOptions)
+      .then(async (response) => {
+        const blob = await response.blob();
+        return URL.createObjectURL(blob);
+      })
+  }
+
   render() {
     const { loadingUser, posts, totalPosts } = this.props;
     const hasMore = posts.length === totalPosts ? false : true;
-    const feedPosts = posts.map((post) => (
+    const feedPosts = this.state.newposts.map((post) => (
       <Post key={post._id} post={{ ...post, feed: true }} />
     ));
 

@@ -42,7 +42,16 @@ const linkifyOptions = {
 };
 
 class UserProfile extends Component {
-  state = { username: "" };
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: "",
+      newposts:[],
+      profilepicurl: '',
+      bool: false
+    };
+  }
+  // state = { username: "" };
 
   getFollowings = () => {
     const { dispatch, userProfileData } = this.props;
@@ -61,6 +70,40 @@ class UserProfile extends Component {
     }
   };
 
+  async componentDidUpdate() {
+    if (this.state.bool === false) {
+      let tempprofilepicurl;
+      let newposts=[];
+      const { userProfileData } = this.props;
+      if(userProfileData.data._id)
+      {
+        if(userProfileData.data.profilePicture!=="person.png")
+        {
+      this.downloaduserProfileDataProfilePic(userProfileData.data._id)
+        .then(async (res) => {
+          tempprofilepicurl=res;
+          newposts=userProfileData.data.posts;
+          for(let i=0; i<userProfileData.data.posts.length;i++)
+          {
+            newposts[i].photourl=await this.downloadPostPicture(userProfileData.data.posts[i]);
+            newposts[i].profilepic=res;
+          }
+            this.setState({...this.state, profilepicurl: tempprofilepicurl, bool: true,newposts: newposts })
+        });
+      }
+      else{
+        newposts=userProfileData.data.posts;
+        for(let i=0; i<userProfileData.data.posts.length;i++)
+        {
+          newposts[i].photourl=await this.downloadPostPicture(userProfileData.data.posts[i]);
+          newposts[i].profilepic="person.png";
+        }
+          this.setState({...this.state, profilepicurl: "person.png", bool: true,newposts: newposts })
+      }
+    }
+    }
+  }
+
   fetchData = () => {
     const { dispatch, userProfileData } = this.props;
     const lastId =
@@ -70,6 +113,39 @@ class UserProfile extends Component {
       userActions.getUserPosts({ userId: userProfileData.data._id, lastId })
     );
   };
+
+  async downloadUserProfilePic(userId) {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        Authorization: JSON.parse(localStorage.getItem("user")).token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId }),
+    };
+    return fetch("/api/user/downloadUserProfilePic", requestOptions)
+      .then(async (response) => {
+        const blob = await response.blob();
+        return URL.createObjectURL(blob);
+      })
+  }
+
+  async downloadPostPicture(posts) {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        Authorization: JSON.parse(localStorage.getItem("user")).token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ posts }),
+    };
+    return fetch("/api/post/downloadPostPicture", requestOptions)
+      .then(async (response) => {
+        const blob = await response.blob();
+        return URL.createObjectURL(blob);
+      })
+  }
+
 
   render() {
     const { userProfileData, fetchingUserData, alert } = this.props;
@@ -91,7 +167,7 @@ class UserProfile extends Component {
         </Dimmer>
       );
     } else {
-      const posts = userProfileData.data.posts.map(post => {
+      const posts = this.state.newposts.map(post => {
         return (
           <Modal
             key={post._id}
@@ -99,8 +175,8 @@ class UserProfile extends Component {
             trigger={
               <div className="gallery-item">
                 <img
-                  src={`/images/post-images/thumbnail/${post.photo}`}
-                  className="gallery-image"
+                src={post.photourl}
+                className="gallery-image"
                   alt=""
                 />
 
@@ -159,10 +235,9 @@ class UserProfile extends Component {
             <div className="container">
               <div className="profile">
                 <div className="profile-image">
-                  <img
-                    src={`/images/profile-picture/100x100/${userProfileData.data.profilePicture}`}
-                    alt=""
-                  />
+                {this.state.profilepicurl !=="person.png"?
+                    <img src={this.state.profilepicurl} alt="profilepicture" />
+                    :<img src={"/images/profile-picture/100x100/person.png"} alt="profilepicture" />}
                 </div>
 
                 <div className="profile-user-settings">

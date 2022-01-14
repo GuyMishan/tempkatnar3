@@ -38,7 +38,7 @@ router.post(
   "/addPost",
   checkAuth,
   postController.upload,
-  postValidator.createPost,
+  //postValidator.createPost,
   postController.createPost
 );
 
@@ -61,6 +61,11 @@ router.post(
   checkAuth,
   postValidator.deletePost,
   postController.deletePost
+);
+
+router.post(
+  "/downloadPostPicture",
+  postController.downloadPostPicture
 );
 
 module.exports = router;

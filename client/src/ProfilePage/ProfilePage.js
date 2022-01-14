@@ -47,7 +47,8 @@ class ProfilePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      url: '',
+      newposts:[],
+      profilepicurl: '',
       bool: false
     };
   }
@@ -56,13 +57,37 @@ class ProfilePage extends Component {
     document.title = "Profile | social-network";
   };
 
-  componentDidUpdate() {
+  async componentDidUpdate() {
     if (this.state.bool === false) {
+      let tempprofilepicurl;
+      let newposts=[];
       const { user } = this.props;
+      if(user.data._id)
+      {
+        if(user.data.profilePicture!=="person.png")
+        {
       this.downloadUserProfilePic(user.data._id)
-        .then((res) => {
-          this.setState({ url: res, bool: true })
+        .then(async (res) => {
+          tempprofilepicurl=res;
+          newposts=user.data.posts;
+          for(let i=0; i<user.data.posts.length;i++)
+          {
+            newposts[i].photourl=await this.downloadPostPicture(user.data.posts[i]);
+            newposts[i].profilepic=res;
+          }
+            this.setState({...this.state, profilepicurl: tempprofilepicurl, bool: true,newposts: newposts })
         });
+      }
+      else{
+        newposts=user.data.posts;
+        for(let i=0; i<user.data.posts.length;i++)
+        {
+          newposts[i].photourl=await this.downloadPostPicture(user.data.posts[i]);
+          newposts[i].profilepic="person.png";
+        }
+          this.setState({...this.state, profilepicurl: "person.png", bool: true,newposts: newposts })
+      }
+    }
     }
   }
 
@@ -82,7 +107,7 @@ class ProfilePage extends Component {
     dispatch(userActions.getFollowers(user.data._id));
   };
 
-  downloadUserProfilePic(userId) {
+  async downloadUserProfilePic(userId) {
     const requestOptions = {
       method: "POST",
       headers: {
@@ -98,24 +123,40 @@ class ProfilePage extends Component {
       })
   }
 
+  async downloadPostPicture(posts) {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        Authorization: JSON.parse(localStorage.getItem("user")).token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ posts }),
+    };
+    return fetch("/api/post/downloadPostPicture", requestOptions)
+      .then(async (response) => {
+        const blob = await response.blob();
+        return URL.createObjectURL(blob);
+      })
+  }
+
   render() {
     const { user, alert } = this.props;
 
     const hasMore =
       user.data.postsCount === user.data.posts.length ? false : true;
-    const posts = user.data.posts.map(post => {
+    const posts = this.state.newposts.map(post => {
       return (
         <Modal
           key={post._id}
           size="small"
           trigger={
             <div className="gallery-item">
-              {/* <img
-                src={`/images/post-images/thumbnail/${post.photo}`}
+              <img
+                src={post.photourl}
                 className="gallery-image"
                 alt=""
-              /> */}
-
+              />
+              <h3>{post.photo}</h3>
               <div className="gallery-item-info">
                 <ul>
                   <li className="gallery-item-likes">
@@ -184,7 +225,9 @@ class ProfilePage extends Component {
                 {alert.type ? <Messages alert={alert} /> : null}
                 <div className="profile">
                   <div className="profile-image">
-                  <img src={this.state.url} alt="homo" />
+                    {this.state.profilepicurl !=="person.png"?
+                    <img src={this.state.profilepicurl} alt="profilepicture" />
+                    :<img src={"/images/profile-picture/100x100/person.png"} alt="profilepicture" />}
                   </div>
                   <div className="profile-user-settings">
                     <h1 className="profile-user-name">{user.data.username}</h1>

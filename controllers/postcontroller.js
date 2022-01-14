@@ -14,6 +14,29 @@ const linkify = require("linkifyjs");
 require("linkifyjs/plugins/hashtag")(linkify);
 require("linkifyjs/plugins/mention")(linkify);
 
+const util = require("util");
+const { GridFsStorage } = require("multer-gridfs-storage");
+const Grid = require('gridfs-stream');
+const GridFSBucket = require("mongodb").GridFSBucket;
+const MongoClient = require("mongodb").MongoClient;
+const url = process.env.ATLAS_URI;
+const mongoClient = new MongoClient(url);
+
+// Mongo URI
+const mongoURI = url;
+
+// Create mongo connection
+const conn = mongoose.createConnection(mongoURI);
+
+// Init gfs
+let gfs;
+
+conn.once('open', () => {
+  // Init stream
+  gfs = Grid(conn.db, mongoose.mongo);
+  gfs.collection('photos');
+});
+
 const postLookup = [
   {
     $lookup: {
@@ -63,46 +86,94 @@ function arrayRemove(array, value) {
   });
 }
 
-const storage = multer.diskStorage({
-  //multers disk storage settings
-  destination: (req, file, cb) => {
-    cb(null, "./public/images/post-images/");
-  },
-  filename: (req, file, cb) => {
-    const ext = file.mimetype.split("/")[1];
+// const storage = multer.diskStorage({
+//   //multers disk storage settings
+//   destination: (req, file, cb) => {
+//     cb(null, "./public/images/post-images/");
+//   },
+//   filename: (req, file, cb) => {
+//     const ext = file.mimetype.split("/")[1];
 
-    cb(null, uuidv4() + "." + ext);
-  },
+//     cb(null, uuidv4() + "." + ext);
+//   },
+// });
+
+var storage = new GridFsStorage({
+  url: process.env.ATLAS_URI,
+  options: { useNewUrlParser: true, useUnifiedTopology: true },
+  file: (req, file) => {
+    const match = ["image/png", "image/jpeg"];
+
+    if (match.indexOf(file.mimetype) === -1) {
+      const filename = `${Date.now()}-bezkoder-${file.originalname}`;
+      return filename;
+    }
+
+    return {
+      bucketName: "photos",
+      filename: `${Date.now()}-bezkoder-${file.originalname}`
+    };
+  }
 });
 
-const upload = multer({
-  //multer settings
-  storage: storage,
-  fileFilter: function (req, file, cb) {
-    checkFileType(file, cb);
-  },
-  limits: {
-    fileSize: 10485760, //10 MB
-  },
-}).single("photo");
+// const upload = multer({
+//   //multer settings
+//   storage: storage,
+//   fileFilter: function (req, file, cb) {
+//     checkFileType(file, cb);
+//   },
+//   limits: {
+//     fileSize: 10485760, //10 MB
+//   },
+// }).single("photo");
+
+var uploadFiles = multer({ storage: storage, limits: { fileSize: 2048 * 2048, } }).single("photo");
+
+// exports.upload = async (req, res, next) => {
+//   upload(req, res, (err) => {
+//     if (err) return res.status(400).json({ message: err.message });
+
+//     if (!req.file)
+//       return res.status(400).json({ message: "Please upload a file" });
+
+//     req.body.photo = req.file.filename;
+//     Jimp.read(req.file.path, function (err, test) {
+//       if (err) throw err;
+//       test
+//         .scaleToFit(480, Jimp.AUTO, Jimp.RESIZE_BEZIER)
+//         .quality(50)
+//         .write("./public/images/post-images/thumbnail/" + req.body.photo);
+//       next();
+//     });
+//   });
+// };
+
+var uploadFilesMiddleware = util.promisify(uploadFiles);
 
 exports.upload = async (req, res, next) => {
-  upload(req, res, (err) => {
-    if (err) return res.status(400).json({ message: err.message });
+  try {
+    await uploadFilesMiddleware(req, res);
+    console.log(req.file);
+    if (req.file == undefined) {
+      return res.send({
+        message: "You must select a file.",
+      });
+    }
 
-    if (!req.file)
-      return res.status(400).json({ message: "Please upload a file" });
-
-    req.body.photo = req.file.filename;
-    Jimp.read(req.file.path, function (err, test) {
-      if (err) throw err;
-      test
-        .scaleToFit(480, Jimp.AUTO, Jimp.RESIZE_BEZIER)
-        .quality(50)
-        .write("./public/images/post-images/thumbnail/" + req.body.photo);
+    else {
       next();
+      return res.send({
+        message: "File has been uploaded.",
+      });
+    }
+
+  } catch (error) {
+    console.log(error);
+
+    return res.send({
+      message: "Error when trying upload image: ${error}",
     });
-  });
+  }
 };
 
 exports.getPosts = (req, res) => {
@@ -444,6 +515,7 @@ exports.getPost = (req, res) => {
 };
 
 exports.createPost = (req, res) => {
+  console.log(req)
   const hashtags = linkify // find hashtags
     .find(req.body.description)
     .filter((link) => {
@@ -487,7 +559,7 @@ exports.createPost = (req, res) => {
     newPost = new Post({
       author: req.userData.userId,
       description: req.body.description,
-      photo: req.body.photo,
+      photo: req.file.filename,
       hashtags: [...new Set(hashtags)], // remove duplicates
 
       tags: JSON.parse(req.body.tags),
@@ -666,4 +738,34 @@ exports.getPostLikes = (req, res) => {
     .then((users) => {
       res.status(200).json({ users });
     });
+};
+
+exports.downloadPostPicture = async (req, res) => {
+      let profilepicname=req.body.posts.photo;
+      try {
+        gfs.files.findOne({ filename: profilepicname }, (err, file) => {
+          // Check if file
+          if (!file || file.length === 0) {
+            return res.status(404).json({
+              err: 'No file exists'
+            });
+          }
+
+          // Check if image
+          if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
+            // Read output to browser
+            const readstream = gfs.createReadStream(file.filename);
+            readstream.pipe(res);
+          } else {
+            res.status(404).json({
+              err: 'Not an image'
+            });
+          }
+        });
+      } catch (error) {
+        return res.status(500).send({
+          message: error.message,
+        });
+      }
+      // console.log(req)
 };
